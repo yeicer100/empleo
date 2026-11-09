@@ -58,3 +58,11 @@ Abre http://localhost:5173. El backend tiene que estar encendido.
 - Ve las ofertas publicadas, puede **guardarlas** y **postularse**.
 - Al postularse llena sus datos (nombre, estudio, años de experiencia, WhatsApp, mensaje).
 - En **Mis postulaciones** ve el estado. Si la empresa acepta, aparece el contacto de la empresa con un botón para escribirle por WhatsApp.
+
+## Publicar en internet
+
+Mira `DESPLIEGUE.md` (opción gratis con TiDB Cloud y Render).
+
+## Docker
+
+Mira `DOCKER.md` (un solo comando: `docker compose up -d --build`).

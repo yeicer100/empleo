@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 import { pool, probarConexion } from "./db.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -40,6 +43,23 @@ app.get("/api/health", async (req, res) => {
 app.get("/api/ping", (req, res) => {
   res.json({ mensaje: "El backend esta funcionando" });
 });
+
+// Una ruta /api que no existe responde JSON (no la pagina web)
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: "Ruta no encontrada" });
+});
+
+// En produccion, este mismo servidor entrega el sitio (frontend/dist).
+// Asi se publica TODO como un solo servicio y no hace falta configurar CORS.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const carpetaFrontend = path.join(__dirname, "..", "frontend", "dist");
+if (fs.existsSync(carpetaFrontend)) {
+  app.use(express.static(carpetaFrontend));
+  // Cualquier otra ruta (/empleos, /login, ...) la resuelve React
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(carpetaFrontend, "index.html"));
+  });
+}
 
 // Cualquier error no atrapado en un controlador responde 500 en vez de tumbar el servidor
 app.use((err, req, res, next) => {

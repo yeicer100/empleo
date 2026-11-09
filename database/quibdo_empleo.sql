@@ -122,7 +122,7 @@ CREATE TABLE postulacion (
     id_oferta INT NOT NULL,
     id_candidato INT NOT NULL,
     fecha_postulacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    estado ENUM('enviada', 'en_revision', 'preseleccionado', 'rechazado', 'contratado') NOT NULL DEFAULT 'enviada',
+    estado ENUM('enviada', 'en_revision', 'preseleccionado', 'aceptada', 'rechazado', 'contratado') NOT NULL DEFAULT 'enviada',
     FOREIGN KEY (id_oferta)
         REFERENCES oferta(id_oferta),
     FOREIGN KEY (id_candidato)

@@ -1,0 +1,27 @@
+# Configuracion para publicar en Render (plan gratis).
+# Un solo servicio: construye el frontend y el backend lo entrega junto con la API.
+services:
+  - type: web
+    name: empleo-quibdo
+    runtime: node
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/ping
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DB_SSL
+        value: "true"
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: JWT_SECRET
+        sync: false

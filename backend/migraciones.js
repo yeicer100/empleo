@@ -30,11 +30,19 @@ export async function asegurarEsquema() {
     await agregarColumna("postulacion", "mensaje_empresa", "VARCHAR(300) NULL");
     await agregarColumna("postulacion", "contacto_empresa", "VARCHAR(20) NULL");
     await agregarColumna("postulacion", "fecha_respuesta", "DATETIME NULL");
-    await pool.query(
-      `ALTER TABLE postulacion MODIFY estado
-       ENUM('enviada','en_revision','preseleccionado','aceptada','rechazado','contratado')
-       NOT NULL DEFAULT 'enviada'`
+    // Agrega el estado "aceptada" solo si la tabla todavia no lo tiene
+    const [[tipo]] = await pool.query(
+      `SELECT COLUMN_TYPE AS tipo FROM information_schema.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'postulacion' AND COLUMN_NAME = 'estado'`
     );
+    if (tipo && !String(tipo.tipo).includes("aceptada")) {
+      await pool.query(
+        `ALTER TABLE postulacion MODIFY estado
+         ENUM('enviada','en_revision','preseleccionado','aceptada','rechazado','contratado')
+         NOT NULL DEFAULT 'enviada'`
+      );
+      console.log("  + estado 'aceptada' en postulacion");
+    }
     console.log("Esquema de la base de datos al dia");
   } catch (error) {
     console.error("No se pudo actualizar el esquema de la base de datos:", error.message);
